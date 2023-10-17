@@ -15,7 +15,7 @@ const createProduct = async (req, res) => {
 // Listar todos los productos
 const listProducts = async (req, res) => {
     try {
-        const products = await Product.find().populate('categoryId');
+        const products = await Product.find().populate('categoryIds');
         res.json(products);
     } catch (error) {
         console.error(error);
@@ -23,10 +23,22 @@ const listProducts = async (req, res) => {
     }
 }
 
+// Listar productos por categoría
+const listProductsByCategory = async (req, res) => {
+    try {
+        const categoryId = req.params.categoryId;
+        const products = await Product.find({ categoryIds: categoryId }).populate('categoryIds');
+        res.json(products);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Hubo un error al listar los productos por categoría" });
+    }
+}
+
 // Ver un producto específico por ID
 const getProduct = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id).populate('categoryId');
+        const product = await Product.findById(req.params.id).populate('categoryIds');
         if (!product) {
             return res.status(404).json({ msg: "Producto no encontrado" });
         }
@@ -40,7 +52,7 @@ const getProduct = async (req, res) => {
 // Editar un producto
 const updateProduct = async (req, res) => {
     try {
-        const { name, thumbnail, brand, price, categoryId } = req.body;
+        const { name, thumbnail, brand, price, categoryIds } = req.body;
         let product = await Product.findById(req.params.id);
 
         if (!product) {
@@ -51,7 +63,7 @@ const updateProduct = async (req, res) => {
         product.thumbnail = thumbnail;
         product.brand = brand;
         product.price = price;
-        product.categoryId = categoryId;
+        product.categoryIds = categoryIds;
 
         product = await Product.findByIdAndUpdate(req.params.id, product, { new: true });
         res.json(product);
@@ -60,6 +72,7 @@ const updateProduct = async (req, res) => {
         res.status(500).json({ msg: "Hubo un error al actualizar el producto" });
     }
 }
+
 
 // Eliminar un producto
 const deleteProduct = async (req, res) => {
@@ -78,4 +91,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-export { createProduct, listProducts, getProduct, updateProduct, deleteProduct };
+export { createProduct, listProducts, listProductsByCategory, getProduct, updateProduct, deleteProduct };

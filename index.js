@@ -30,6 +30,8 @@ conectarDB();
 // Routing
 app.use('/storage/categories_api/images', express.static(path.join(__dirname, 'storage/categories_api/images')));
 
+app.use('/storage/products_api/images', express.static(path.join(__dirname, 'storage/products_api/images')));
+
 app.use("/api/usuarios", usuarioRoutes);
 
 app.use("/api/categories", categoryRoutes);
