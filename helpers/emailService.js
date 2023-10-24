@@ -1,4 +1,6 @@
 import { createTransport } from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
 export default async function enviarCorreo(email, token) {
     const transporter = createTransport({
@@ -6,8 +8,8 @@ export default async function enviarCorreo(email, token) {
         port: 465,
         secure: true,
         auth: {
-            user: 'lescuatrefantastiques@gmail.com',
-            pass: 'qpha qdmg khtt wlec'
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
         }
     });
 
