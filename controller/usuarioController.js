@@ -1,6 +1,8 @@
 import Usuario from '../models/Usuario.js'
 import generarId from '../helpers/generarId.js'
 import generarJWT from '../helpers/generarJWT.js'
+import enviarCorreo from '../helpers/emailService.js'
+import cors from 'cors';
 
 const registrar = async (req, res) => {
     //evitar registros duplicados
@@ -16,6 +18,10 @@ const registrar = async (req, res) => {
         const usuario = new Usuario(req.body);
         usuario.token = generarId();
         const usuarioAlmacenado = await usuario.save();
+
+        // Envía el correo de confirmación
+        await enviarCorreo(usuario.email, usuario.token);
+
         res.json(usuarioAlmacenado);
     }catch (error){
         console.log(error);
@@ -55,6 +61,7 @@ const autenticar = async (req, res) => {
 const confirmar = async (req, res) => {
     const { token } = req.params;
     const usuarioConfirmar = await Usuario.findOne({ token });
+
     if(!usuarioConfirmar){
         const error = new Error("Token no válido");
         return res.status(403).json({ msg:error.message })
@@ -64,8 +71,9 @@ const confirmar = async (req, res) => {
         usuarioConfirmar.token = "";
         await usuarioConfirmar.save();
         res.json({ msg: "Usuario confirmado correctamente" });
-    }catch(error){
-
+    }catch (error) {
+        console.error("Error al confirmar el usuario:", error);
+        res.status(500).json({ msg: "Error interno del servidor" });
     }
 }
 

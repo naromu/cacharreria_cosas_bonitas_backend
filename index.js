@@ -16,30 +16,35 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express();
-app.use(cors())
+app.use(cors());
 app.use(express.json());
-
 
 dotenv.config();
 
 
-const PORT = process.env.PORT || 7800;
+const PORT = process.env.PORT;
 
 conectarDB();
 
-// Routing
+//EndPoint imagenes categorias
 app.use('/storage/categories_api/images', express.static(path.join(__dirname, 'storage/categories_api/images')));
 
+//Endpoint imagenes porductos
 app.use('/storage/products_api/images', express.static(path.join(__dirname, 'storage/products_api/images')));
 
+//Endpoint usuarios
 app.use("/api/usuarios", usuarioRoutes);
 
+//Endpoint categorias
 app.use("/api/categories", categoryRoutes);
 
+//Endpoint productos
 app.use("/api/products", productRoutes);
 
+//Endpoint carrito
 app.use("/api/cart", cartRoutes);
 
+//Endpoint ordenes
 app.use('/api/orders', orderRoutes);
 
 app.listen(PORT, () => {
