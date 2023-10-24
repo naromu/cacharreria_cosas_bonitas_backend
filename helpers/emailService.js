@@ -2,7 +2,7 @@ import { createTransport } from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-export default async function enviarCorreo(email, token) {
+export default async function enviarCorreo(email, token,opciones) {
     const transporter = createTransport({
         host: "smtp.gmail.com",
         port: 465,
@@ -21,7 +21,7 @@ export default async function enviarCorreo(email, token) {
         const mailOptions = {
             from: 'lescuatrefantastiques@gmail.com',
             to: email,
-            subject: 'Confirma tu registro',
+            subject: opciones.asunto,
             html: `
             <!DOCTYPE html>
             <html>
@@ -72,16 +72,15 @@ export default async function enviarCorreo(email, token) {
             <div class="container">
                 <img src="https://i.ibb.co/pnNjDRS/logo.png" alt="Cosas Bonitas" class="logo">
                 <p>¡Hola!</p>
-                <p>Gracias por registrarte en Cosas Bonitas. Estamos emocionados de tenerte con nosotros. Por favor, confirma tu registro haciendo clic en el siguiente botón:</p>
-            
+                <p>${opciones.mensaje} </p>
                 <div class="button-container">
-                    <a href="http://localhost:5174/cacharreria_cosas_bonitas/confirmar/${token}" class="button">
-                        Confirmar registro
+                    <a href="http://localhost:5174${opciones.ruta}${token}" class="button">
+                    ${opciones.textoBoton}
                     </a>
                 </div>
             
                 <div class="footer">
-                    <p>Si no solicitaste este registro, ignora este mensaje.</p>
+                    <p>${opciones.mensajePie}</p>
                     <p>Gracias, el equipo de Cosas Bonitas.</p>
                 </div>
             </div>
