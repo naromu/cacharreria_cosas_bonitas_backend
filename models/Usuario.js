@@ -24,7 +24,13 @@ const usuarioSchema = mongoose.Schema({
     confirmado:{
         type: Boolean,
         default: false,
-    }
+    },
+    role: {
+        type: String,
+        enum: ['admin', 'cliente'],
+        default: 'cliente',
+    },
+    
 },
 {
     timestamp:true,
