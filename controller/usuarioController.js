@@ -86,7 +86,7 @@ const confirmar = async (req, res) => {
     usuarioConfirmar.confirmado = true;
     usuarioConfirmar.token = "";
     await usuarioConfirmar.save();
-    res.json({
+    res.status(200).json({
       msg: "¡Gracias por confirmar tu cuenta! Ahora puedes iniciar sesión.",
     });
   } catch (error) {
