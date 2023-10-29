@@ -153,6 +153,7 @@ const nuevoPassword = async (req, res) => {
       res.json({ msg: "Password modificado correctamente" });
     } catch (error) {
       console.log(error);
+      return res.status(500).json({ msg: "Error al cambiar la contraseña." });
     }
   } else {
     const error = new Error(
