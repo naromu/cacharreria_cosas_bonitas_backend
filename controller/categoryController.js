@@ -71,29 +71,30 @@ const updateCategory = async (req, res) => {
       return res.status(404).json({ msg: "Categoría no encontrada" });
     }
 
-    if (category.picture) {
-      const imagePath = path.join(
-        __dirname,
-        "../storage/categories_api/images/",
-        path.basename(category.picture)
-      );
-      fs.unlinkSync(imagePath);
-    }
-
     category.name = name;
-    category.picture = picture;
-
+    console.log("si hay algo", req.file)
     if (req.file) {
+      console.log("category.picture", category.picture)
+
+      // Si hay una nueva imagen
       if (category.picture) {
+        console.log("category.picture", category.picture)
+        // Si la categoría ya tiene una imagen, elimínala
         const oldImagePath = path.join(
           __dirname,
           "../storage/categories_api/images/",
           path.basename(category.picture)
         );
-        fs.unlinkSync(oldImagePath);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
       }
       category.picture = `http://localhost:5800/storage/categories_api/images/${req.file.filename}`;
+    } else {
+      // Si no hay un nuevo archivo, mantiene la URL anterior
+      category.picture = picture;
     }
+
 
     category = await Category.findByIdAndUpdate(req.params.id, category, {
       new: true,
@@ -104,6 +105,7 @@ const updateCategory = async (req, res) => {
     res.status(500).json({ msg: "Hubo un error al actualizar la categoría" });
   }
 };
+
 
 // Eliminar una categoría
 const deleteCategory = async (req, res) => {
