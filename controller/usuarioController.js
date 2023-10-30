@@ -2,7 +2,6 @@ import Usuario from "../models/Usuario.js";
 import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
 import enviarCorreo from "../helpers/emailService.js";
-import cors from "cors";
 
 const registrar = async (req, res) => {
   //evitar registros duplicados
@@ -58,20 +57,20 @@ const autenticar = async (req, res) => {
     return res.status(403).json({ msg: error.message });
   }
 
-    //comprobar el password   
-    if (await usuario.comprobarPassword(password)) {
-        res.json({
-            _id: usuario._id,
-            nombre: usuario.nombre,
-            email: usuario.email,
-            role: usuario.role,
-            token: generarJWT(usuario._id),
-        });
-    } else {
-        const error = new Error("La contraseña que ingresaste es incorrecta.");
-        return res.status(403).json({ msg: error.message });
-    }
-}
+  //comprobar el password
+  if (await usuario.comprobarPassword(password)) {
+    res.json({
+      _id: usuario._id,
+      nombre: usuario.nombre,
+      email: usuario.email,
+      role: usuario.role,
+      token: generarJWT(usuario._id),
+    });
+  } else {
+    const error = new Error("La contraseña que ingresaste es incorrecta.");
+    return res.status(403).json({ msg: error.message });
+  }
+};
 
 const confirmar = async (req, res) => {
   const { token } = req.params;
