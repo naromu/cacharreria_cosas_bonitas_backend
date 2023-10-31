@@ -15,10 +15,18 @@ const getCart = async (req, res) => {
 
 // Agregar un producto al carrito
 const addItemToCart = async (req, res) => {
-    const { email, productID, quantity } = req.body;
-    
+    const { email, userID, productID, quantity } = req.body;
+    console.log(userID);
     try {
-        let cart = await Cart.findOne({ email });
+        
+        // Crear un nuevo carrito si no existe
+        let cart = await Cart.findOne({ userID });
+        if (!cart) {
+            cart = new Cart({ userID, items: [] });
+            await cart.save();
+        }
+
+        // Ahora puedes continuar con el proceso de añadir el artículo al carrito
         let item = new CartItem({
             productID,
             quantity,
