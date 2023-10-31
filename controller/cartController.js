@@ -91,9 +91,10 @@ const removeItemFromCart = async (req, res) => {
     }
 
     const cart = await Cart.findOne({ email });
+
     cart.items.pull(item._id);
     await cart.save();
-    await item.remove();
+    await CartItem.findByIdAndRemove(req.params.id);
 
     res.json({ msg: "Producto eliminado del carrito" });
   } catch (error) {
