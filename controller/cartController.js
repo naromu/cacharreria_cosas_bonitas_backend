@@ -5,7 +5,14 @@ import CartItem from "../models/CartItem.js";
 const getCart = async (req, res) => {
   const { email } = req.body;
   try {
-    const cart = await Cart.findOne({ email }).populate("items");
+    const cart = await Cart.findOne({ email }).populate({
+      path: "items",
+      model: "CartItem",
+      populate: {
+        path: "_id",
+        model: "Product",
+      },
+    });
     res.json(cart);
   } catch (error) {
     console.error(error);
@@ -13,7 +20,6 @@ const getCart = async (req, res) => {
   }
 };
 
-// Agregar un producto al carrito
 const addItemToCart = async (req, res) => {
   const { email, userID, productID, quantity } = req.body;
 
@@ -21,20 +27,28 @@ const addItemToCart = async (req, res) => {
     // Crear un nuevo carrito si no existe
     let cart = await Cart.findOne({ userID });
     if (!cart) {
-      cart = new Cart({ userID, items: [] });
+      cart = new Cart({ userID, email: email, items: [] });
       await cart.save();
     }
 
-    // Ahora puedes continuar con el proceso de añadir el artículo al carrito
-    let item = new CartItem({
-      _id: productID,
-      quantity,
-      cartID: cart._id,
-    });
+    // Verificar si el ítem ya existe en el carrito
+    let item = await CartItem.findOne({ _id: productID, cartID: cart._id });
 
-    await item.save();
-    cart.items.push(item._id);
-    await cart.save();
+    if (item) {
+      // Si el ítem ya existe, actualizar la cantidad
+      item.quantity += quantity;
+      await item.save();
+    } else {
+      // Si el ítem no existe, crear uno nuevo
+      item = new CartItem({
+        _id: productID,
+        quantity,
+        cartID: cart._id,
+      });
+      await item.save();
+      cart.items.push(item._id);
+      await cart.save();
+    }
 
     res.json(item);
   } catch (error) {
