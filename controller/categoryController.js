@@ -72,13 +72,9 @@ const updateCategory = async (req, res) => {
     }
 
     category.name = name;
-    console.log("si hay algo", req.file)
     if (req.file) {
-      console.log("category.picture", category.picture)
-
       // Si hay una nueva imagen
       if (category.picture) {
-        console.log("category.picture", category.picture)
         // Si la categoría ya tiene una imagen, elimínala
         const oldImagePath = path.join(
           __dirname,
@@ -95,7 +91,6 @@ const updateCategory = async (req, res) => {
       category.picture = picture;
     }
 
-
     category = await Category.findByIdAndUpdate(req.params.id, category, {
       new: true,
     });
@@ -105,7 +100,6 @@ const updateCategory = async (req, res) => {
     res.status(500).json({ msg: "Hubo un error al actualizar la categoría" });
   }
 };
-
 
 // Eliminar una categoría
 const deleteCategory = async (req, res) => {

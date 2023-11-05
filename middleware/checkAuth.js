@@ -16,7 +16,6 @@ const checkAuth = async (req, res, next) => {
       req.usuario = await Usuario.findById(decoded.id).select(
         "-password -confirmado -token -createdAt -updatedAt"
       );
-
       return next();
     } catch (error) {
       return res.status(401).json({ msg: "Token inválido o expirado" });
