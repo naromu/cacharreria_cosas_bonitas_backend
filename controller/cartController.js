@@ -3,9 +3,9 @@ import CartItem from "../models/CartItem.js";
 
 // Obtener el carrito de un usuario
 const getCart = async (req, res) => {
-  const { email } = req.body;
+  const { usuario } = req;
   try {
-    const cart = await Cart.findOne({ email }).populate({
+    const cart = await Cart.findOne({ userID: usuario._id }).populate({
       path: "items",
       model: "CartItem",
       populate: {
@@ -21,13 +21,13 @@ const getCart = async (req, res) => {
 };
 
 const addItemToCart = async (req, res) => {
-  const { email, userID, productID, quantity } = req.body;
+  const { userID, productID, quantity } = req.body;
 
   try {
     // Crear un nuevo carrito si no existe
     let cart = await Cart.findOne({ userID });
     if (!cart) {
-      cart = new Cart({ userID, email: email, items: [] });
+      cart = new Cart({ userID, items: [] });
       await cart.save();
     }
 
