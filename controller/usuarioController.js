@@ -5,7 +5,7 @@ import enviarCorreo from "../helpers/emailService.js";
 
 const registrar = async (req, res) => {
   //evitar registros duplicados
-  const { email } = req.body;
+  const { email, baseUrl } = req.body;
   const existeUsuario = await Usuario.findOne({ email });
 
   if (existeUsuario) {
@@ -26,7 +26,7 @@ const registrar = async (req, res) => {
       mensaje:
         "Gracias por registrarte en Cosas Bonitas. Estamos emocionados de tenerte con nosotros. Por favor, confirma tu registro haciendo clic en el siguiente botón:",
       textoBoton: "Confirmar registro",
-      ruta: "/cacharreria_cosas_bonitas/confirmar/",
+      ruta: `${baseUrl}/cacharreria_cosas_bonitas/confirmar/`,
       mensajePie: "Si no solicitaste este registro, ignora este mensaje.",
     });
 
@@ -96,7 +96,7 @@ const confirmar = async (req, res) => {
 };
 
 const olvidePassword = async (req, res) => {
-  const { email } = req.body;
+  const { email, baseUrl } = req.body;
   const usuario = await Usuario.findOne({ email });
   if (!usuario) {
     const error = new Error(
@@ -112,7 +112,7 @@ const olvidePassword = async (req, res) => {
       mensaje:
         "Hemos recibido una solicitud para recuperar tu contraseña. Haz clic en el siguiente botón para establecer una nueva contraseña:",
       textoBoton: "Recuperar contraseña",
-      ruta: "/cacharreria_cosas_bonitas/recuperar/",
+      ruta: `${baseUrl}/cacharreria_cosas_bonitas/recuperar/`,
       mensajePie:
         "Si no solicitaste la recuperación de contraseña, ignora este mensaje.",
     });

@@ -73,7 +73,7 @@ export default async function enviarCorreo(email, token, opciones) {
                 <p>¡Hola!</p>
                 <p>${opciones.mensaje} </p>
                 <div class="button-container">
-                    <a href="http://localhost:5174${opciones.ruta}${token}" class="button">
+                    <a href="${opciones.ruta}${token}" class="button">
                     ${opciones.textoBoton}
                     </a>
                 </div>
