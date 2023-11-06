@@ -2,27 +2,26 @@ import { createTransport } from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-export default async function enviarCorreo(email, token,opciones) {
-    const transporter = createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
-        }
-    });
+export default async function enviarCorreo(email, token, opciones) {
+  const transporter = createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
 
-    try {
-        // Verifica la conexión
-        await transporter.verify();
-        console.log('Conexión a Gmail verificada correctamente.');
+  try {
+    // Verifica la conexión
+    await transporter.verify();
 
-        const mailOptions = {
-            from: 'lescuatrefantastiques@gmail.com',
-            to: email,
-            subject: opciones.asunto,
-            html: `
+    const mailOptions = {
+      from: "lescuatrefantastiques@gmail.com",
+      to: email,
+      subject: opciones.asunto,
+      html: `
             <!DOCTYPE html>
             <html>
             <head>
@@ -89,13 +88,11 @@ export default async function enviarCorreo(email, token,opciones) {
             </html>
             
 
-            `
-        };
+            `,
+    };
 
-        await transporter.sendMail(mailOptions);
-        console.log('Correo enviado correctamente.');
-
-    } catch (error) {
-        console.error('Error al enviar el correo:', error);
-    }
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+  }
 }
