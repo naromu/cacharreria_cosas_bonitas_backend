@@ -36,6 +36,25 @@ const registrar = async (req, res) => {
   }
 };
 
+const actualizarPerfil = async (req, res) => {
+  const { usuario } = req;
+  const { address, postalCode, phone, creditCardNumber } = req.body;
+
+  try {
+    usuario.address = address || usuario.address;
+    usuario.postalCode = postalCode || usuario.postalCode;
+    usuario.phone = phone || usuario.phone;
+    usuario.creditCardNumber = creditCardNumber || usuario.creditCardNumber;
+
+    await usuario.save();
+
+    res.json(usuario);
+  } catch (error) {
+    console.error("Error al actualizar el perfil:", error);
+    res.status(500).json({ msg: "Error al actualizar el perfil" });
+  }
+};
+
 const autenticar = async (req, res) => {
   const { email, password } = req.body;
 
@@ -177,4 +196,5 @@ export {
   comprobarToken,
   nuevoPassword,
   perfil,
+  actualizarPerfil,
 };
