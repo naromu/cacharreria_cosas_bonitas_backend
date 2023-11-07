@@ -72,7 +72,7 @@ const updateCategory = async (req, res) => {
     }
 
     category.name = name;
-    
+
     if (req.file) {
       // Si hay una nueva imagen
       if (category.picture) {
@@ -117,7 +117,9 @@ const deleteCategory = async (req, res) => {
         "../storage/categories_api/images/",
         path.basename(category.picture)
       );
-      fs.unlinkSync(imagePath);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
     }
 
     await Category.findByIdAndRemove(req.params.id);

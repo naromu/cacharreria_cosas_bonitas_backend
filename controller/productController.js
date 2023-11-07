@@ -127,12 +127,28 @@ const updateProduct = async (req, res) => {
 // Eliminar un producto
 const deleteProduct = async (req, res) => {
   try {
-    let product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({ msg: "Producto no encontrado" });
     }
 
+    // Eliminar la imagen del servidor si existe
+    if (product.thumbnail) {
+      // Construir la ruta de la imagen
+      const imagePath = path.join(
+        __dirname,
+        "../storage/products_api/images/",
+        path.basename(product.thumbnail)
+      );
+
+      // Comprobar si el archivo existe y eliminarlo
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
+    // Eliminar el producto de la base de datos
     await Product.findByIdAndRemove(req.params.id);
     res.json({ msg: "Producto eliminado con éxito" });
   } catch (error) {
