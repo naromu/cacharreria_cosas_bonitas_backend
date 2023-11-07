@@ -1,17 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const productOrderSchema = new mongoose.Schema({
-  productID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true
+  _id: {
+    type: String,
+    ref: "Product",
+    required: true,
   },
   quantity: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const ProductOrder = mongoose.model('ProductOrder', productOrderSchema);
+const ProductOrder = mongoose.model("ProductOrder", productOrderSchema);
 
 export default ProductOrder;
