@@ -2,6 +2,7 @@ import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
 import CartItem from "../models/CartItem.js";
 import ProductOrder from "../models/ProductOrder.js";
+import mongoose from "mongoose";
 
 // Crear una orden a partir de un carrito
 const createOrderFromCart = async (req, res) => {
@@ -26,36 +27,34 @@ const createOrderFromCart = async (req, res) => {
       }
     }
 
-    const productOrders = await Promise.all(
-      products.map(async (product) => {
-        const productOrder = new ProductOrder({
-          _id: product._id,
-          quantity: product.quantity,
-        });
-        await productOrder.save();
-        return productOrder._id; // Devuelve solo el ID para asociarlo con la orden
-      })
-    );
-
-    // Crear la orden ya sea con un carrito o con la información proporcionada por un usuario no registrado
-    const newOrderData = {
+    const newOrder = new Order({
       userID: userID,
       totalAmount: totalAmount,
-      products: productOrders,
+      products: [],
       status: status,
       address: address,
       postalCode: postalCode,
       phone: phone,
       email: email,
       creditCardNumber: creditCardNumber,
-    };
+    });
+    await newOrder.save();
 
-    // Si no hay userID, remover la propiedad para evitar conflicto con el esquema de Mongoose
-    if (!userID) {
-      delete newOrderData.userID;
-    }
+    // Ahora, crear cada ProductOrder y asociar el ID de la nueva orden
+    const productOrders = await Promise.all(
+      products.map(async (product) => {
+        const productOrder = new ProductOrder({
+          productId: product._id,
+          quantity: product.quantity,
+          orderID: newOrder._id, // Asignamos el ID de la nueva orden aquí
+        });
+        await productOrder.save();
+        return productOrder._id; // Devuelve solo el ID para asociarlo con la orden
+      })
+    );
 
-    const newOrder = new Order(newOrderData);
+    // Ahora, actualizamos la orden con los ID de los ProductOrder creados
+    newOrder.products = productOrders;
     await newOrder.save();
 
     // Si hay un carrito, vaciarlo
@@ -67,8 +66,10 @@ const createOrderFromCart = async (req, res) => {
 
     res.json(newOrder);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: "Hubo un error al crear la orden" });
+    console.error("Error al crear la orden:", error);
+    res
+      .status(500)
+      .json({ msg: "Hubo un error al crear la orden", error: error.message });
   }
 };
 
@@ -92,7 +93,7 @@ const listOrders = async (req, res) => {
       path: "products",
       model: "ProductOrder",
       populate: {
-        path: "_id",
+        path: "productId",
         model: "Product",
       },
     });

@@ -9,7 +9,7 @@ const getCart = async (req, res) => {
       path: "items",
       model: "CartItem",
       populate: {
-        path: "_id",
+        path: "productId",
         model: "Product",
       },
     });
@@ -32,7 +32,10 @@ const addItemToCart = async (req, res) => {
     }
 
     // Verificar si el ítem ya existe en el carrito
-    let item = await CartItem.findOne({ _id: productID, cartID: cart._id });
+    let item = await CartItem.findOne({
+      productId: productID,
+      cartID: cart._id,
+    });
 
     if (item) {
       // Si el ítem ya existe, actualizar la cantidad
@@ -41,12 +44,12 @@ const addItemToCart = async (req, res) => {
     } else {
       // Si el ítem no existe, crear uno nuevo
       item = new CartItem({
-        _id: productID,
+        productId: productID,
         quantity,
         cartID: cart._id,
       });
       await item.save();
-      cart.items.push(item._id);
+      cart.items.push(item);
       await cart.save();
     }
 
