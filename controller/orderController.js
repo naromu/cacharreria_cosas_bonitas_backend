@@ -9,6 +9,7 @@ const createOrderFromCart = async (req, res) => {
     userID,
     products,
     totalAmount,
+    status,
     address,
     postalCode,
     phone,
@@ -41,6 +42,7 @@ const createOrderFromCart = async (req, res) => {
       userID: userID,
       totalAmount: totalAmount,
       products: productOrders,
+      status: status,
       address: address,
       postalCode: postalCode,
       phone: phone,
@@ -72,10 +74,28 @@ const createOrderFromCart = async (req, res) => {
 
 // Listar todas las órdenes de un usuario
 const listOrders = async (req, res) => {
-  const { userID } = req.body;
+  const userID = req.query.userID; // Obtener userID del query de la solicitud
+  const email = req.query.email; // Obtener email del query de la solicitud
+
+  let query = {}; // Iniciar la consulta vacía
+
+  if (userID) {
+    // Si se ha proporcionado un userID, buscar por userID
+    query.userID = userID;
+  } else if (email) {
+    // Si no hay userID pero sí un email, buscar por email
+    query.email = email;
+  }
 
   try {
-    const orders = await Order.find({ userID }).populate("products");
+    const orders = await Order.find(query).populate({
+      path: "products",
+      model: "ProductOrder",
+      populate: {
+        path: "_id",
+        model: "Product",
+      },
+    });
     res.json(orders);
   } catch (error) {
     console.error(error);
