@@ -76,7 +76,7 @@ const updateCategory = async (req, res) => {
     if (req.file) {
       // Si hay una nueva imagen
       if (category.picture) {
-        // Si la categoría ya tiene una imagen, elimínala
+        // Si la categoría ya tiene una imagen, se elimina
         const oldImagePath = path.join(
           __dirname,
           "../storage/categories_api/images/",
@@ -88,7 +88,7 @@ const updateCategory = async (req, res) => {
       }
       category.picture = `http://localhost:5800/storage/categories_api/images/${req.file.filename}`;
     } else {
-      // Si no hay un nuevo archivo, mantiene la URL anterior
+      // Si no hay un nuevo archivo, se mantiene la imagen anterior
       category.picture = picture;
     }
 

@@ -58,7 +58,7 @@ const createOrderFromCart = async (req, res) => {
     const newOrder = new Order(newOrderData);
     await newOrder.save();
 
-    // Si hay un carrito, proceder a vaciarlo
+    // Si hay un carrito, vaciarlo
     if (cart) {
       await CartItem.deleteMany({ cartID: cart._id });
       cart.items = [];
@@ -74,10 +74,10 @@ const createOrderFromCart = async (req, res) => {
 
 // Listar todas las órdenes de un usuario
 const listOrders = async (req, res) => {
-  const userID = req.query.userID; // Obtener userID del query de la solicitud
-  const email = req.query.email; // Obtener email del query de la solicitud
+  const userID = req.query.userID;
+  const email = req.query.email;
 
-  let query = {}; // Iniciar la consulta vacía
+  let query = {};
 
   if (userID) {
     // Si se ha proporcionado un userID, buscar por userID

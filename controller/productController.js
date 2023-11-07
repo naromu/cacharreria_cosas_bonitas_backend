@@ -98,7 +98,7 @@ const updateProduct = async (req, res) => {
     if (req.file) {
       // Si hay una nueva imagen
       if (product.thumbnail) {
-        // Si la categoría ya tiene una imagen, elimínala
+        // Si la categoría ya tiene una imagen, eliminarla
         const oldImagePath = path.join(
           __dirname,
           "../storage/products_api/images/",
@@ -110,7 +110,7 @@ const updateProduct = async (req, res) => {
       }
       product.thumbnail = `http://localhost:5800/storage/products_api/images/${req.file.filename}`;
     } else {
-      // Si no hay un nuevo archivo, mantiene la URL anterior
+      // Si no hay un nuevo archivo, se mantiene la imagen anterior
       product.thumbnail = thumbnail;
     }
 
