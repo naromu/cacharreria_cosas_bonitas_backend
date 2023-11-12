@@ -15,7 +15,7 @@ import {
 router.post("/", createCategory);
 router.get("/", listCategories);
 router.get("/:id", getCategory);
-router.put("/:id", upload.single("image"), updateCategory);
+router.put("/:id", upload.single("picture"), updateCategory);
 router.delete("/:id", deleteCategory);
 router.post("/upload", upload.single("image"), uploadImage);
 
