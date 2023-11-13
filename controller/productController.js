@@ -94,12 +94,6 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ msg: "Producto no encontrado" });
     }
 
-    product.name = name;
-    product.thumbnail = thumbnail;
-    product.brand = brand;
-    product.price = price;
-    product.categoryIds = categoryIds;
-
     if (req.file) {
       // Si hay una nueva imagen
       if (product.thumbnail) {
@@ -118,6 +112,11 @@ const updateProduct = async (req, res) => {
       // Si no hay un nuevo archivo, se mantiene la imagen anterior
       product.thumbnail = thumbnail;
     }
+
+    product.name = name;
+    product.brand = brand;
+    product.price = price;
+    product.categoryIds = categoryIds;
 
     product = await Product.findByIdAndUpdate(req.params.id, product, {
       new: true,

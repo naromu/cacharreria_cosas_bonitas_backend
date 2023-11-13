@@ -71,7 +71,7 @@ const updateCategory = async (req, res) => {
       return res.status(404).json({ msg: "Categoría no encontrada" });
     }
 
-    category.name = name;
+    
 
     if (req.file) {
       // Si hay una nueva imagen
@@ -91,6 +91,8 @@ const updateCategory = async (req, res) => {
       // Si no hay un nuevo archivo, se mantiene la imagen anterior
       category.picture = picture;
     }
+
+    category.name = name;
 
     category = await Category.findByIdAndUpdate(req.params.id, category, {
       new: true,
