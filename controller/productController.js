@@ -29,7 +29,12 @@ const createProduct = async (req, res) => {
     const uniqueId = await generateUniqueId();
     const product = new Product({ _id: uniqueId, ...req.body });
     const savedProduct = await product.save();
-    res.json(savedProduct);
+    const populatedProduct = await Product.findById(savedProduct._id)
+      .populate('categoryIds')
+      .exec();
+
+    // Envíar el producto poblado como respuesta.
+    res.json(populatedProduct);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Hubo un error al crear el producto" });
@@ -117,7 +122,13 @@ const updateProduct = async (req, res) => {
     product = await Product.findByIdAndUpdate(req.params.id, product, {
       new: true,
     });
-    res.json(product);
+
+    const populatedProduct = await Product.findById(product._id)
+      .populate('categoryIds')
+      .exec();
+
+    // Envíar el producto poblado como respuesta.
+    res.json(populatedProduct);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Hubo un error al actualizar el producto" });
